@@ -8,7 +8,7 @@ import numpy as np
 import math
 
 
-def tsai_mubarak(image, tilt, slant, iterations):
+def tsai_shah(image, tilt, slant, iterations):
     grayscale = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
     heightmap = np.zeros(grayscale.shape)
     heightmap_prev = np.zeros(grayscale.shape)
@@ -22,6 +22,8 @@ def tsai_mubarak(image, tilt, slant, iterations):
     height, width = grayscale.shape
     for iteration in range(iterations):
         print(iteration)
+
+        cv2.imwrite('out' + str(iteration) + '.png', heightmap)
         for x in range(1, width):
             for y in range(1, height):
                 p = heightmap_prev[y, x] - heightmap_prev[y, x - 1]

@@ -1,14 +1,18 @@
 import cv2
-from shapefromshading.tsai_mubarak_linera import tsai_mubarak
+import argparse
+
+from shapefromshading.tsai_shah_linera import tsai_shah
 
 def main():
-    print("Hello from the shape of shading algorithm")
-    img = cv2.imread('test.png')
-    result = tsai_mubarak(img, 0.6, 0.1, 10)
+    parser = argparse.ArgumentParser(description='Seal Shape From Shading out of Potsdam')
+    parser.add_argument('source')
+
+    args = parser.parse_args()
+
+    img = cv2.imread(args.source)
+    result = tsai_shah(img, -0.785, 0.4, 9)
     cv2.imwrite('out.png', result)
     print("Wrote out.png")
-    cv2.imshow('Depth file', result)
-    cv2.waitKey()
 
 if __name__ == "__main__":
     main()
