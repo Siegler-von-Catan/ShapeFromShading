@@ -18,6 +18,8 @@ def tsai_shah(image, tilt, slant, iterations):
 
     ps = math.cos(tilt) * math.sin(slant) / math.cos(slant)
     qs = math.sin(tilt) * math.sin(slant) / math.cos(slant)
+    pqs = 1.0 + ps * ps + qs * qs
+    ps_p_qs = ps + qs
     Wn = 0.00000001
     height, width = grayscale.shape
     for iteration in range(iterations):
@@ -34,11 +36,10 @@ def tsai_shah(image, tilt, slant, iterations):
         q = heightmap_prev - hmY
 
         pq = 1.0 + p * p + q * q
-        pqs = 1.0 + ps * ps + qs * qs
-        fZ = -1.0 * (grayscale - np.clip((1 + p * ps + q * qs), 0.0, None) / (
-                np.sqrt(pq) * np.sqrt(pqs)))
-        dfZ = -1.0 * ((ps + qs) / (np.sqrt(pq) * np.sqrt(pqs)) - (p + q) * (1.0 + p * ps + q * qs) / (
-                np.sqrt(pq * pq * pq) * np.sqrt(pqs)))
+        ppsqqs = 1.0 + p * ps + q * qs
+        sqrt_pq_pqs = np.sqrt(pq * pqs)
+        fZ = grayscale - np.clip(ppsqqs, 0.0, None) / sqrt_pq_pqs
+        dfZ = -1.0 * (ps_p_qs / sqrt_pq_pqs - (p + q) * ppsqqs / (pq * sqrt_pq_pqs))
         Y = fZ + dfZ * heightmap
         K = si_prev * dfZ / (Wn + dfZ * si_prev * dfZ)
         si = (1.0 - K * dfZ) * si_prev
