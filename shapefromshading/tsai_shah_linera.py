@@ -9,7 +9,7 @@ import math
 
 
 def tsai_shah(image, tilt, slant, iterations):
-    grayscale = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+    grayscale = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY) / 255.0
     heightmap = np.zeros(grayscale.shape)
     heightmap_prev = np.zeros(grayscale.shape)
     si = np.full(grayscale.shape, 0.01)
@@ -24,21 +24,26 @@ def tsai_shah(image, tilt, slant, iterations):
         print(iteration)
 
         cv2.imwrite('out' + str(iteration) + '.png', heightmap)
-        for x in range(1, width):
-            for y in range(1, height):
-                p = heightmap_prev[y, x] - heightmap_prev[y, x - 1]
-                q = heightmap_prev[y, x] - heightmap_prev[y - 1, x]
-                pq = 1.0 + p * p + q * q
-                pqs = 1.0 + ps * ps + qs * qs
-                e = grayscale[y, x] / 255.0
-                fZ = -1.0 * (e - max(0.0, (1 + p * ps + q * qs) / (
-                        math.sqrt(1.0 + p * p + q * q) * math.sqrt(1.0 + ps * ps + qs * qs))))
-                dfZ = -1.0 * ((ps + qs) / (math.sqrt(pq) * math.sqrt(pqs)) - (p + q) * (1.0 + p * ps + q * qs) / (
-                        math.sqrt(pq * pq * pq) * math.sqrt(pqs)))
-                Y = fZ + dfZ * heightmap[y, x]
-                K = si_prev[y, x] * dfZ / (Wn + dfZ * si_prev[y, x] * dfZ)
-                si[y, x] = (1.0 - K * dfZ) * si_prev[y, x]
-                heightmap[y, x] = heightmap_prev[y, x] + K * (Y - dfZ * heightmap_prev[y, x])
+
+        zX = np.zeros(shape=(height, 1))
+        hmX = np.concatenate((zX, heightmap_prev[:, :-1]), axis=1)
+        zY = np.zeros(shape=(1, width))
+        hmY = np.concatenate((zY, heightmap_prev[:-1, :]), axis=0)
+
+        p = heightmap_prev - hmX
+        q = heightmap_prev - hmY
+
+        pq = 1.0 + p * p + q * q
+        pqs = 1.0 + ps * ps + qs * qs
+        fZ = -1.0 * (grayscale - np.clip((1 + p * ps + q * qs), 0.0, None) / (
+                np.sqrt(pq) * np.sqrt(pqs)))
+        dfZ = -1.0 * ((ps + qs) / (np.sqrt(pq) * np.sqrt(pqs)) - (p + q) * (1.0 + p * ps + q * qs) / (
+                np.sqrt(pq * pq * pq) * np.sqrt(pqs)))
+        Y = fZ + dfZ * heightmap
+        K = si_prev * dfZ / (Wn + dfZ * si_prev * dfZ)
+        si = (1.0 - K * dfZ) * si_prev
+        heightmap = heightmap_prev + K * (Y - dfZ * heightmap_prev)
+
         heightmap_prev = heightmap
         si = si_prev
 
