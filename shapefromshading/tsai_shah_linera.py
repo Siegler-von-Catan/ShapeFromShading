@@ -28,9 +28,9 @@ def tsai_shah(image, tilt, slant, iterations):
         cv2.imwrite('out' + str(iteration) + '.png', heightmap)
 
         zX = np.zeros(shape=(height, 1))
-        hmX = np.concatenate((zX, heightmap_prev[:, :-1]), axis=1)
+        hmX = np.concatenate((heightmap_prev[:, :-1], zX), axis=1)
         zY = np.zeros(shape=(1, width))
-        hmY = np.concatenate((zY, heightmap_prev[:-1, :]), axis=0)
+        hmY = np.concatenate((heightmap_prev[:-1, :], zY), axis=0)
 
         p = heightmap_prev - hmX
         q = heightmap_prev - hmY
@@ -38,7 +38,7 @@ def tsai_shah(image, tilt, slant, iterations):
         pq = 1.0 + p * p + q * q
         ppsqqs = 1.0 + p * ps + q * qs
         sqrt_pq_pqs = np.sqrt(pq * pqs)
-        fZ = grayscale - np.clip(ppsqqs, 0.0, None) / sqrt_pq_pqs
+        fZ = -1.0 * (grayscale - np.clip(ppsqqs, 0.0, None) / sqrt_pq_pqs)
         dfZ = -1.0 * (ps_p_qs / sqrt_pq_pqs - (p + q) * ppsqqs / (pq * sqrt_pq_pqs))
         Y = fZ + dfZ * heightmap
         K = si_prev * dfZ / (Wn + dfZ * si_prev * dfZ)
@@ -46,7 +46,8 @@ def tsai_shah(image, tilt, slant, iterations):
         heightmap = heightmap_prev + K * (Y - dfZ * heightmap_prev)
 
         heightmap_prev = heightmap
-        si = si_prev
+        si_prev = si
+        # si = si_prev
 
     return heightmap
 
