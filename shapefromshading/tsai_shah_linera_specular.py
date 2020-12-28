@@ -16,17 +16,16 @@ def tsai_shah_specular(image, tilt, slant, iterations):
     si_prev = np.full(grayscale.shape, 0.01)
 
     # Specular constants
-    bisect_light_view = [1, 2, 3]
-    H = np.full(grayscale.shape, bisect_light_view / np.linalg.norm(bisect_light_view))
+    bisect_light_view = [0.1, 0, 1]
+    H = bisect_light_view / np.linalg.norm(bisect_light_view)
     m = 1
-    Is = 1
-    K_light = 1
+    K_light = -10
 
     ps = math.cos(tilt) * math.sin(slant) / math.cos(slant)
     qs = math.sin(tilt) * math.sin(slant) / math.cos(slant)
     pqs = 1.0 + ps * ps + qs * qs
     ps_p_qs = ps + qs
-    Wn = 0.00000001
+    Wn = 0.0001
     height, width = grayscale.shape
     for iteration in range(iterations):
         print(iteration)
@@ -45,20 +44,24 @@ def tsai_shah_specular(image, tilt, slant, iterations):
         ppsqqs = 1.0 + p * ps + q * qs
         sqrt_pq_pqs = np.sqrt(pq * pqs)
 
-        N = np.dstack((p, q, np.ones(grayscale.shape))) / np.sqrt(pq)
-
-        e_matrix = np.full(grayscale.shape, np.e)
-        fZ = grayscale - K_light * np.power(np.e, -)
-        dfZ = -1.0 * (ps_p_qs / sqrt_pq_pqs - (p + q) * ppsqqs / (pq
+        exponents = np.zeros(shape=heightmap.shape)
+        for y in range(height):
+            for x in range(width):
+                nh = (p[y][x] * H[0] + q[y][x] * H[1] + H[2]) / np.sqrt(p[y][x] * p[y][x] + q[y][x] * q[y][x] + 1)
+                alpha = np.arccos(nh)
+                exponents[y][x] = - (alpha * alpha / m * m)
+        fZ = grayscale - K_light * np.power(np.e, exponents)
+        dfZ = -2.0 * K_light * np.power(np.e, exponents) * alpha / (m * m * np.sqrt(1- nh * nh)) * (H[0] + H[1] + H[2] - ((p* H[0] + q * H[1] + H[2]) * (p + q)/ pq)) * np.power(pq, -0.5)
         Y = fZ + dfZ * heightmap
         K = si_prev * dfZ / (Wn + dfZ * si_prev * dfZ)
         si = (1.0 - K * dfZ) * si_prev
 
-        heightmap = (grayscale - Is - fZ ) / dfZ + heightmap_prev
+        heightmap = heightmap_prev + K * (Y - dfZ * heightmap_prev)
 
         heightmap_prev = heightmap
         si_prev = si
-        # si = si_prev
 
-    return heightmap
+    heightmap -= np.min(heightmap) # Put linear between 0 and 1
+    heightmap /= np.max(heightmap)
+    return heightmap * 255
 
