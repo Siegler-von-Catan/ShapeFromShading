@@ -47,7 +47,6 @@ def tsai_shah(image, tilt, slant, iterations):
 
         heightmap_prev = heightmap
         si_prev = si
-        # si = si_prev
 
     return heightmap
 
