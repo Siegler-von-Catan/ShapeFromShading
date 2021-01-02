@@ -1,8 +1,8 @@
 import cv2
 import argparse
 
-from shapefromshading.tsai_shah_linera import tsai_shah
-from shapefromshading.tsai_shah_linera_specular import tsai_shah_specular
+from tsai_shah_linera import tsai_shah
+from tsai_shah_linera_specular import tsai_shah_specular
 
 def main():
     parser = argparse.ArgumentParser(description='Seal Shape From Shading out of Potsdam')
