@@ -34,3 +34,27 @@ Now,
 sealconvert3d [args]
 ```
 should be available in your command line.
+
+Options are:
+```
+usage: sealconvert3d [-h] [-o OUTPUT] [-alg {tsai_shah,tsai_shah_specular}] [-s SLANT] [-t TILT] [-i ITERATIONS] [-l LOGLEVEL] source
+
+Seal Shape From Shading out of Potsdam
+
+positional arguments:
+  source
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -o OUTPUT, --output OUTPUT
+                        Filename to write to
+  -alg {tsai_shah,tsai_shah_specular}, --algorithm {tsai_shah,tsai_shah_specular}
+                        Shape from Shading Algorithm to use
+  -s SLANT, --slant SLANT
+                        Slant of lighting source
+  -t TILT, --tilt TILT  Tilt of lighting source
+  -i ITERATIONS, --iterations ITERATIONS
+                        Iterations to run the algorithm through
+  -l LOGLEVEL, --loglevel LOGLEVEL
+                        Set debugging level. Use "debug" for highest details
+```
