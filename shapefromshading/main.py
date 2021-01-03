@@ -14,7 +14,7 @@ def main():
     parser.add_argument('-s', '--slant', help="Slant of lighting source", default=-0.785)
     parser.add_argument('-t', '--tilt', help="Tilt of lighting source", default=1.4)
     parser.add_argument('-i', '--iterations', help="Iterations to run the algorithm through", default=10)
-    parser.add_argument('-l', '--loglevel', help="Enable/disable debugging output", default="critical")
+    parser.add_argument('-l', '--loglevel', help="Set debugging level. Use \"debug\" for highest details", default="critical")
 
     args = parser.parse_args()
 
