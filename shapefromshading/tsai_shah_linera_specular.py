@@ -17,7 +17,9 @@ def tsai_shah_specular(image, tilt, slant, iterations):
 
     # Specular constants
     bisect_light_view = [0.1, 0, 1]
-    H = bisect_light_view / np.linalg.norm(bisect_light_view)
+    H_vec = bisect_light_view / np.linalg.norm(bisect_light_view)
+    H = [np.full(grayscale.shape, H_vec[0]), np.full(grayscale.shape, H_vec[1]), np.full(grayscale.shape, H_vec[2])]
+
     m = 1
     K_light = -10
 
@@ -44,12 +46,10 @@ def tsai_shah_specular(image, tilt, slant, iterations):
         ppsqqs = 1.0 + p * ps + q * qs
         sqrt_pq_pqs = np.sqrt(pq * pqs)
 
-        exponents = np.zeros(shape=heightmap.shape)
-        for y in range(height):
-            for x in range(width):
-                nh = (p[y][x] * H[0] + q[y][x] * H[1] + H[2]) / np.sqrt(p[y][x] * p[y][x] + q[y][x] * q[y][x] + 1)
-                alpha = np.arccos(nh)
-                exponents[y][x] = - (alpha * alpha / m * m)
+        nh = (p * H[0] + q * H[1] + H[2]) / np.sqrt(pq)
+        alpha = np.arccos(nh)
+        exponents = - (alpha * alpha / m * m)
+
         fZ = grayscale - K_light * np.power(np.e, exponents)
         dfZ = -2.0 * K_light * np.power(np.e, exponents) * alpha / (m * m * np.sqrt(1- nh * nh)) * (H[0] + H[1] + H[2] - ((p* H[0] + q * H[1] + H[2]) * (p + q)/ pq)) * np.power(pq, -0.5)
         Y = fZ + dfZ * heightmap
