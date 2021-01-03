@@ -6,6 +6,7 @@
 import cv2
 import numpy as np
 import math
+import logging
 
 
 def tsai_shah(image, tilt, slant, iterations):
@@ -23,9 +24,10 @@ def tsai_shah(image, tilt, slant, iterations):
     Wn = 0.00000001
     height, width = grayscale.shape
     for iteration in range(iterations):
-        print(iteration)
+        logging.debug(iteration)
 
-        cv2.imwrite('out' + str(iteration) + '.png', heightmap)
+        if logging.DEBUG >= logging.root.level:
+            cv2.imwrite('out' + str(iteration) + '.png', heightmap)
 
         zX = np.zeros(shape=(height, 1))
         hmX = np.concatenate((heightmap_prev[:, :-1], zX), axis=1)

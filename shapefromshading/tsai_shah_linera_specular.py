@@ -2,6 +2,7 @@
 # Shape from shading using linear approximation
 # by Ping-Sing Tsai and Mubarak Shah (1994)
 # The naming of functions is also taken out of the paper, in case you wonder about the weird naming.
+import logging
 
 import cv2
 import numpy as np
@@ -30,9 +31,10 @@ def tsai_shah_specular(image, tilt, slant, iterations):
     Wn = 0.0001
     height, width = grayscale.shape
     for iteration in range(iterations):
-        print(iteration)
+        logging.debug(iteration)
 
-        cv2.imwrite('out' + str(iteration) + '.png', heightmap)
+        if logging.DEBUG >= logging.root.level:
+            cv2.imwrite('out' + str(iteration) + '.png', heightmap)
 
         zX = np.zeros(shape=(height, 1))
         hmX = np.concatenate((heightmap_prev[:, :-1], zX), axis=1)
