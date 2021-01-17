@@ -17,12 +17,12 @@ def tsai_shah_specular(image, tilt, slant, iterations):
     si_prev = np.full(grayscale.shape, 0.01)
 
     # Specular constants
-    bisect_light_view = [0.1, 0, 1]
+    bisect_light_view = [1, 0, 0.1]
     H_vec = bisect_light_view / np.linalg.norm(bisect_light_view)
     H = [np.full(grayscale.shape, H_vec[0]), np.full(grayscale.shape, H_vec[1]), np.full(grayscale.shape, H_vec[2])]
 
-    m = 1
-    K_light = -10
+    m = 10
+    K_light = -1
 
     ps = math.cos(tilt) * math.sin(slant) / math.cos(slant)
     qs = math.sin(tilt) * math.sin(slant) / math.cos(slant)
@@ -59,6 +59,8 @@ def tsai_shah_specular(image, tilt, slant, iterations):
         si = (1.0 - K * dfZ) * si_prev
 
         heightmap = heightmap_prev + K * (Y - dfZ * heightmap_prev)
+
+        cv2.GaussianBlur(heightmap, (21, 21), 0)
 
         heightmap_prev = heightmap
         si_prev = si
