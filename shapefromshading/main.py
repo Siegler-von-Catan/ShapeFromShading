@@ -9,7 +9,7 @@ def main():
     parser = argparse.ArgumentParser(description='Seal Shape From Shading out of Potsdam')
     parser.add_argument('source')
     parser.add_argument('-o', '--output', help="Filename to write to", default="out.png")
-    parser.add_argument('-alg', '--algorithm', help="Shape from Shading Algorithm to use", default='tsai_shah',
+    parser.add_argument('-alg', '--algorithm', help="Shape from Shading Algorithm to use", default='tsai_shah_specular',
                         choices=['tsai_shah', 'tsai_shah_specular'])
     parser.add_argument('-s', '--slant', help="Slant of lighting source", default=-0.785)
     parser.add_argument('-t', '--tilt', help="Tilt of lighting source", default=1.4)
@@ -27,7 +27,7 @@ def main():
     if args.algorithm == 'tsai_shah_specular':
         result = tsai_shah_specular(img, args.slant, args.tilt, args.iterations)
     else:
-        result = tsai_shah(img, -0.785, 1.4, 10)
+        result = tsai_shah(img, args.slant, args.tilt, 10)
     cv2.imwrite(args.output, result)
     logging.info("Wrote " + args.output)
 
