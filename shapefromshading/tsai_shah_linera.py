@@ -1,5 +1,7 @@
 #     ShapeFromShading - Creating heightmaps out of 2D seal images.
-#     Copyright (C) 2021 Siegler von Catan - Tobias Markus, Dominik Meier
+#     Copyright (C) 2021
+#     Joana Bergsiek, Leonard Geier, Lisa Ihde, Tobias Markus, Dominik Meier, Paul Methfessel
+#
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
