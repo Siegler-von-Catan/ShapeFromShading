@@ -20,8 +20,8 @@ import argparse
 import logging
 
 from shapefromshading.optimize import optimize_parameters
-from .tsai_shah_linera import tsai_shah
-from .tsai_shah_linera_specular import tsai_shah_specular
+from shapefromshading.tsai_shah_linera import tsai_shah
+from shapefromshading.tsai_shah_linera_specular import tsai_shah_specular
 
 def main():
     parser = argparse.ArgumentParser(description='Seal Shape From Shading out of Potsdam')
@@ -33,7 +33,7 @@ def main():
     parser.add_argument('-t', '--tilt', help="Tilt of lighting source", default=1.4)
     parser.add_argument('-i', '--iterations', help="Iterations to run the algorithm through", default=10)
     parser.add_argument('-l', '--loglevel', help="Set debugging level. Use \"debug\" for highest details", default="critical")
-    parser.add_argument('-opt', '--optimize', default=False)
+    parser.add_argument('-opt', '--optimize', help="Optimize parameters using genetically algorithm", action="store_true")
 
     args = parser.parse_args()
 
@@ -46,7 +46,8 @@ def main():
 
     if args.optimize:
         truth = cv2.imread('images/uni_big_heightmap.png')
-        optimize_parameters(img, truth, args)
+        truth_greyscale = cv2.cvtColor(truth, cv2.COLOR_RGB2GRAY) / 255.0
+        optimize_parameters(img, truth_greyscale, args)
     elif args.algorithm == 'tsai_shah_specular':
         result = tsai_shah_specular(img, args.slant, args.tilt, args.iterations)
     else:
