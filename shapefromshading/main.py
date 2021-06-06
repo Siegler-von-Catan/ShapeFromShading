@@ -48,6 +48,7 @@ def main():
         truth = cv2.imread('images/uni_big_heightmap.png')
         truth_greyscale = cv2.cvtColor(truth, cv2.COLOR_RGB2GRAY) / 255.0
         optimize_parameters(img, truth_greyscale, args)
+        return
     elif args.algorithm == 'tsai_shah_specular':
         result = tsai_shah_specular(img, args.slant, args.tilt, args.iterations)
     else:

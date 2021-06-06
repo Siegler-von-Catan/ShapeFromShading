@@ -11,14 +11,14 @@ from .tsai_shah_linera_specular import tsai_shah_specular
 
 def optimize_parameters(test_image, ground_truth_image, args):
     def function_to_optimize(X):
-        return X[0]
         slant = X[0]
         tilt = X[1]
-        heightmap = tsai_shah_specular(test_image, tilt, slant, args.iterations)
+        # print(f"Try {slant} and {tilt} now")
+        heightmap = tsai_shah_specular(test_image, tilt, slant, 3)
         return score(heightmap, ground_truth_image)
 
     algorithm_parameters = {'max_num_iteration': None,
-                            'population_size': 100,
+                            'population_size': 5,
                             'mutation_probability': 0.1,
                             'elit_ratio': 0.01,
                             'crossover_probability': 0.5,
