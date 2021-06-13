@@ -8,8 +8,8 @@ setuptools.setup(
     python_requires='>=3.7',
     install_requires=['shapefromshading'],
     entry_points={
-            'console_scripts': [
-                'sealconvert3d = shapefromshading.main:main',
-            ],
-        },
+        'console_scripts': [
+            'sealconvert3d = shapefromshading.main:main',
+        ],
+    },
 )

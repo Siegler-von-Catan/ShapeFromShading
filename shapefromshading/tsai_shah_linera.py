@@ -35,7 +35,6 @@ def tsai_shah(image, tilt, slant, iterations):
     si = np.full(grayscale.shape, 0.01)
     si_prev = np.full(grayscale.shape, 0.01)
 
-
     ps = math.cos(tilt) * math.sin(slant) / math.cos(slant)
     qs = math.sin(tilt) * math.sin(slant) / math.cos(slant)
     pqs = 1.0 + ps * ps + qs * qs
@@ -46,7 +45,7 @@ def tsai_shah(image, tilt, slant, iterations):
         logging.debug(iteration)
 
         if logging.DEBUG >= logging.root.level:
-            cv2.imwrite('out' + str(iteration) + '.png', heightmap)
+            cv2.imwrite("out" + str(iteration) + ".png", heightmap)
 
         zX = np.zeros(shape=(height, 1))
         hmX = np.concatenate((heightmap_prev[:, :-1], zX), axis=1)
@@ -70,4 +69,3 @@ def tsai_shah(image, tilt, slant, iterations):
         si_prev = si
 
     return heightmap
-
