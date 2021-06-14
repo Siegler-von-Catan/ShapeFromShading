@@ -58,3 +58,10 @@ optional arguments:
   -l LOGLEVEL, --loglevel LOGLEVEL
                         Set debugging level. Use "debug" for highest details
 ```
+
+## Image Attributions
+
+The images `uni_big_greyscale.png` and `uni_big_heightmap.png` are from
+Susanne Krömker and Mara Hubert, and
+licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.
+Further information can be found under [here](https://doi.org/10.11588/data/10044)
