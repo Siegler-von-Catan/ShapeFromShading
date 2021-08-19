@@ -40,9 +40,9 @@ def main():
         choices=["tsai_shah", "tsai_shah_specular"],
     )
     parser.add_argument(
-        "-s", "--slant", help="Slant of lighting source", default=-0.785
+        "-s", "--slant", help="Slant of lighting source", default=-0.9469
     )
-    parser.add_argument("-t", "--tilt", help="Tilt of lighting source", default=1.4)
+    parser.add_argument("-t", "--tilt", help="Tilt of lighting source", default=0.4527)
     parser.add_argument(
         "-i", "--iterations", help="Iterations to run the algorithm through", default=10
     )
@@ -69,7 +69,7 @@ def main():
     img = cv2.imread(args.source)
 
     if args.optimize:
-        truth = cv2.imread("images/uni_big_heightmap.png")
+        truth = cv2.imread("images/uni_big_heightmap_inverted.png")
         truth_greyscale = cv2.cvtColor(truth, cv2.COLOR_RGB2GRAY) / 255.0
         optimize_parameters(img, truth_greyscale, args)
         return
